@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeetCode C++ Solutions | Premium Compendium</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0c;
+            --card-bg: rgba(20, 20, 25, 0.7);
+            --border-glow: rgba(124, 77, 255, 0.3);
+            --accent-primary: #7C4DFF;
+            --accent-secondary: #00E5FF;
+            --accent-tertiary: #FF4081;
+            --text-main: #e0e0e6;
+            --text-dim: #9494a5;
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --card-hover: rgba(30, 30, 40, 0.9);
+            --font-sans: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(124, 77, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(0, 229, 255, 0.05) 0%, transparent 40%);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #fff 0%, var(--text-dim) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        .controls {
+            position: sticky;
+            top: 1rem;
+            z-index: 100;
+            background: rgba(10, 10, 12, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 1rem;
+            border-radius: 1.5rem;
+            border: 1px solid var(--glass-border);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: fadeIn 1s ease-in;
+        }
+
+        .search-wrap {
+            flex: 1;
+            position: relative;
+            min-width: 250px;
+        }
+
+        .search-wrap input {
+            width: 100%;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 0 1.25rem;
+            color: #fff;
+            font-family: var(--font-sans);
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .search-wrap input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 15px var(--border-glow);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            height: 48px;
+            padding: 0 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid var(--glass-border);
+            background: transparent;
+            color: var(--text-main);
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-dim);
+        }
+
+        .btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: #fff;
+        }
+
+        .status-bar {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-bottom: 1rem;
+            padding-left: 0.5rem;
+        }
+
+        .problem-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.25rem;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s;
+        }
+
+        .problem-card:hover {
+            border-color: var(--border-glow);
+            transform: translateY(-4px) scale(1.01);
+            background: var(--card-hover);
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .num-badge {
+            background: linear-gradient(135deg, var(--accent-primary), #9c7aff);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 8px;
+            min-width: 45px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(124, 77, 255, 0.3);
+        }
+
+        .problem-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            flex: 1;
+            letter-spacing: -0.01em;
+        }
+
+        .meta-tags {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-dim);
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+        }
+
+        .chevron {
+            color: var(--text-dim);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .chevron.open {
+            transform: rotate(180deg);
+            color: var(--accent-primary);
+        }
+
+        .code-container {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .code-container.open {
+            grid-template-rows: 1fr;
+        }
+
+        .code-content {
+            overflow: hidden;
+            position: relative;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            padding: 6px 14px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+
+        .copy-btn.copied {
+            background: #00C853;
+            border-color: #00C853;
+        }
+
+        pre {
+            padding: 1.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            line-height: 1.7;
+            overflow-x: auto;
+            color: #d1d1e0;
+        }
+
+        /* Mock Syntax Highlighting */
+        .k { color: #c678dd; } /* keyword */
+        .c { color: #5c6370; font-style: italic; } /* comment */
+        .s { color: #98c379; } /* string */
+        .n { color: #d19a66; } /* number */
+        .t { color: #61afef; } /* type */
+        .f { color: #e06c75; } /* function */
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--glass-border);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        @media (max-width: 600px) {
+            .meta-tags { display: none; }
+            .problem-title { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>LeetCode C++</h1>
+            <p>Premium algorithm solutions compendium</p>
+        </header>
+
+        <div class="controls">
+            <div class="search-wrap">
+                <input type="text" id="search" placeholder="Search problems..." oninput="filterCards()">
+            </div>
+            <div class="btn-group">
+                <button class="btn" onclick="expandAll()" title="Expand All">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+                </button>
+                <button class="btn" onclick="collapseAll()" title="Collapse All">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14h6v6"/><path d="M20 10h-6V4"/><path d="M14 10l7-7"/><path d="M10 14l-7 7"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="status-bar" id="count">Showing 30 solutions</div>
+        <div id="cards"></div>
+    </div>
+
+    <script>
+        const problems = [
+            { num:1, title:"Two Sum", time:"O(n)", space:"O(n)",
+              code:`#include <vector>
+#include <unordered_map>
+using namespace std;
+
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int, int> seen;
+        for (int i = 0; i < (int)nums.size(); i++) {
+            int complement = target - nums[i];
+            if (seen.count(complement))
+                return { seen[complement], i };
+            seen[nums[i]] = i;
+        }
+        return {};
+    }
+};`},
+            { num:2, title:"Add Two Numbers", time:"O(max(m,n))", space:"O(max(m,n))",
+              code:`struct ListNode {
+    int val;
+    ListNode* next;
+    ListNode(int x) : val(x), next(nullptr) {}
+};
+
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode dummy(0);
+        ListNode* cur = &dummy;
+        int carry = 0;
+        while (l1 || l2 || carry) {
+            int sum = carry;
+            if (l1) { sum += l1->val; l1 = l1->next; }
+            if (l2) { sum += l2->val; l2 = l2->next; }
+            carry = sum / 10;
+            cur->next = new ListNode(sum % 10);
+            cur = cur->next;
+        }
+        return dummy.next;
+    }
+};`},
+            { num:3, title:"Longest Substring Without Repeating Characters", time:"O(n)", space:"O(min(n,|Σ|))",
+              code:`#include <string>
+#include <unordered_map>
+using namespace std;
+
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        unordered_map<char, int> last;
+        int maxLen = 0, left = 0;
+        for (int right = 0; right < (int)s.size(); right++) {
+            if (last.count(s[right]) && last[s[right]] >= left)
+                left = last[s[right]] + 1;
+            last[s[right]] = right;
+            maxLen = max(maxLen, right - left + 1);
+        }
+        return maxLen;
+    }
+};`},
+            { num:7, title:"Reverse Integer", time:"O(log x)", space:"O(1)",
+              code:`#include <climits>
+using namespace std;
+
+class Solution {
+public:
+    int reverse(int x) {
+        int rev = 0;
+        while (x != 0) {
+            int digit = x % 10;
+            x /= 10;
+            if (rev > INT_MAX / 10 || (rev == INT_MAX / 10 && digit > 7))
+                return 0;
+            if (rev < INT_MIN / 10 || (rev == INT_MIN / 10 && digit < -8))
+                return 0;
+            rev = rev * 10 + digit;
+        }
+        return rev;
+    }
+};`},
+            { num:9, title:"Palindrome Number", time:"O(log n)", space:"O(1)",
+              code:`class Solution {
+public:
+    bool isPalindrome(int x) {
+        if (x < 0 || (x % 10 == 0 && x != 0)) return false;
+        int reversed = 0;
+        while (x > reversed) {
+            reversed = reversed * 10 + x % 10;
+            x /= 10;
+        }
+        return x == reversed || x == reversed / 10;
+    }
+};`},
+            { num:13, title:"Roman to Integer", time:"O(n)", space:"O(1)",
+              code:`#include <string>
+#include <unordered_map>
+using namespace std;
+
+class Solution {
+public:
+    int romanToInt(string s) {
+        unordered_map<char, int> val = {
+            {'I',1},{'V',5},{'X',10},{'L',50},
+            {'C',100},{'D',500},{'M',1000}
+        };
+        int result = 0;
+        for (int i = 0; i < (int)s.size(); i++) {
+            if (i + 1 < (int)s.size() && val[s[i]] < val[s[i+1]])
+                result -= val[s[i]];
+            else
+                result += val[s[i]];
+        }
+        return result;
+    }
+};`},
+            { num:29, title:"Divide Two Integers", time:"O(log² n)", space:"O(1)",
+              code:`#include <climits>
+using namespace std;
+
+class Solution {
+public:
+    int divide(int dividend, int divisor) {
+        if (dividend == INT_MIN && divisor == -1) return INT_MAX;
+        long a = abs((long)dividend), b = abs((long)divisor);
+        int sign = (dividend > 0) == (divisor > 0) ? 1 : -1;
+        long result = 0;
+        while (a >= b) {
+            long temp = b, multiple = 1;
+            while (a >= (temp << 1)) {
+                temp <<= 1;
+                multiple <<= 1;
+            }
+            a -= temp;
+            result += multiple;
+        }
+        return (int)(sign * result);
+    }
+};`},
+            { num:35, title:"Search Insert Position", time:"O(log n)", space:"O(1)",
+              code:`#include <vector>
+using namespace std;
+
+class Solution {
+public:
+    int searchInsert(vector<int>& nums, int target) {
+        int left = 0, right = (int)nums.size() - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) return mid;
+            else if (nums[mid] < target) left = mid + 1;
+            else right = mid - 1;
+        }
+        return left;
+    }
+};`},
+            { num:51, title:"N-Queens", time:"O(n!)", space:"O(n)",
+              code:`#include <vector>
+#include <string>
+using namespace std;
+
+class Solution {
+    vector<vector<string>> res;
+    void solve(int row, int n, vector<string>& board,
+               vector<bool>& col, vector<bool>& d1, vector<bool>& d2) {
+        if (row == n) { res.push_back(board); return; }
+        for (int c = 0; c < n; c++) {
+            if (col[c] || d1[row-c+n] || d2[row+c]) continue;
+            board[row][c] = 'Q';
+            col[c] = d1[row-c+n] = d2[row+c] = true;
+            solve(row+1, n, board, col, d1, d2);
+            board[row][c] = '.';
+            col[c] = d1[row-c+n] = d2[row+c] = false;
+        }
+    }
+public:
+    vector<vector<string>> solveNQueens(int n) {
+        vector<string> board(n, string(n, '.'));
+        vector<bool> col(n,false), d1(2*n,false), d2(2*n,false);
+        solve(0, n, board, col, d1, d2);
+        return res;
+    }
+};`},
+            { num:58, title:"Length of Last Word", time:"O(n)", space:"O(1)",
+              code:`#include <string>
+using namespace std;
+
+class Solution {
+public:
+    int lengthOfLastWord(string s) {
+        int i = (int)s.size() - 1, len = 0;
+        while (i >= 0 && s[i] == ' ') i--;
+        while (i >= 0 && s[i] != ' ') { len++; i--; }
+        return len;
+    }
+};`},
+            { num:67, title:"Add Binary", time:"O(max(m,n))", space:"O(max(m,n))",
+              code:`#include <string>
+#include <algorithm>
+using namespace std;
+
+class Solution {
+public:
+    string addBinary(string a, string b) {
+        string res = "";
+        int i = (int)a.size()-1, j = (int)b.size()-1, carry = 0;
+        while (i >= 0 || j >= 0 || carry) {
+            int sum = carry;
+            if (i >= 0) sum += a[i--] - '0';
+            if (j >= 0) sum += b[j--] - '0';
+            res += (char)('0' + sum % 2);
+            carry = sum / 2;
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};`},
+            { num:78, title:"Subsets", time:"O(n·2ⁿ)", space:"O(n·2ⁿ)",
+              code:`#include <vector>
+using namespace std;
+
+class Solution {
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        int n = (int)nums.size();
+        vector<vector<int>> result;
+        for (int mask = 0; mask < (1 << n); mask++) {
+            vector<int> subset;
+            for (int i = 0; i < n; i++)
+                if (mask & (1 << i))
+                    subset.push_back(nums[i]);
+            result.push_back(subset);
+        }
+        return result;
+    }
+};`},
+            { num:125, title:"Valid Palindrome", time:"O(n)", space:"O(1)",
+              code:`#include <string>
+#include <cctype>
+using namespace std;
+
+class Solution {
+public:
+    bool isPalindrome(string s) {
+        int left = 0, right = (int)s.size() - 1;
+        while (left < right) {
+            while (left < right && !isalnum(s[left]))  left++;
+            while (left < right && !isalnum(s[right])) right--;
+            if (tolower(s[left]) != tolower(s[right])) return false;
+            left++; right--;
+        }
+        return true;
+    }
+};`},
+            { num:136, title:"Single Number", time:"O(n)", space:"O(1)",
+              code:`#include <vector>
+using namespace std;
+
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int result = 0;
+        for (int n : nums) result ^= n;
+        return result;
+    }
+};`},
+            { num:151, title:"Reverse Words in a String", time:"O(n)", space:"O(n)",
+              code:`#include <string>
+#include <sstream>
+#include <vector>
+using namespace std;
+
+class Solution {
+public:
+    string reverseWords(string s) {
+        istringstream iss(s);
+        vector<string> words;
+        string word;
+        while (iss >> word) words.push_back(word);
+        string res = "";
+        for (int i = (int)words.size()-1; i >= 0; i--) {
+            if (i != (int)words.size()-1) res += " ";
+            res += words[i];
+        }
+        return res;
+    }
+};`},
+            { num:179, title:"Largest Number", time:"O(n log n)", space:"O(n)",
+              code:`#include <vector>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+class Solution {
+public:
+    string largestNumber(vector<int>& nums) {
+        vector<string> strs;
+        for (int n : nums) strs.push_back(to_string(n));
+        sort(strs.begin(), strs.end(),
+             [](const string& a, const string& b) {
+                 return a + b > b + a;
+             });
+        if (strs[0] == "0") return "0";
+        string res = "";
+        for (auto& s : strs) res += s;
+        return res;
+    }
+};`},
+            { num:204, title:"Count Primes", time:"O(n log log n)", space:"O(n)",
+              code:`#include <vector>
+using namespace std;
+
+class Solution {
+public:
+    int countPrimes(int n) {
+        if (n < 2) return 0;
+        vector<bool> isPrime(n, true);
+        isPrime[0] = isPrime[1] = false;
+        for (int i = 2; (long long)i*i < n; i++) {
+            if (!isPrime[i]) continue;
+            for (int j = i*i; j < n; j += i)
+                isPrime[j] = false;
+        }
+        int count = 0;
+        for (bool p : isPrime) if (p) count++;
+        return count;
+    }
+};`},
+            { num:268, title:"Missing Number", time:"O(n)", space:"O(1)",
+              code:`#include <vector>
+using namespace std;
+
+class Solution {
+public:
+    int missingNumber(vector<int>& nums) {
+        int n = (int)nums.size();
+        int expected = n * (n + 1) / 2;
+        int actual = 0;
+        for (int x : nums) actual += x;
+        return expected - actual;
+    }
+};`},
+            { num:328, title:"Odd Even Linked List", time:"O(n)", space:"O(1)",
+              code:`struct ListNode {
+    int val; ListNode* next;
+    ListNode(int x) : val(x), next(nullptr) {}
+};
+
+class Solution {
+public:
+    ListNode* oddEvenList(ListNode* head) {
+        if (!head) return head;
+        ListNode* odd = head;
+        ListNode* even = head->next;
+        ListNode* evenHead = even;
+        while (even && even->next) {
+            odd->next  = even->next;
+            odd = odd->next;
+            even->next = odd->next;
+            even = even->next;
+        }
+        odd->next = evenHead;
+        return head;
+    }
+};`},
+            { num:414, title:"Third Maximum Number", time:"O(n)", space:"O(1)",
+              code:`#include <vector>
+#include <set>
+using namespace std;
+
+class Solution {
+public:
+    int thirdMax(vector<int>& nums) {
+        set<int> top;
+        for (int n : nums) {
+            top.insert(n);
+            if ((int)top.size() > 3)
+                top.erase(top.begin());
+        }
+        if ((int)top.size() < 3) return *top.rbegin();
+        return *top.begin();
+    }
+};`},
+            { num:1281, title:"Subtract the Product and Sum of Digits", time:"O(log n)", space:"O(1)",
+              code:`class Solution {
+public:
+    int subtractProductAndSum(int n) {
+        int product = 1, sum = 0;
+        while (n > 0) {
+            int d = n % 10;
+            product *= d;
+            sum += d;
+            n /= 10;
+        }
+        return product - sum;
+    }
+};`},
+            { num:1952, title:"Three Divisors", time:"O(n)", space:"O(1)",
+              code:`class Solution {
+public:
+    bool isThree(int n) {
+        int count = 0;
+        for (int i = 1; i <= n; i++)
+            if (n % i == 0) count++;
+        return count == 3;
+    }
+};`},
+            { num:2235, title:"Add Two Integers", time:"O(1)", space:"O(1)",
+              code:`class Solution {
+public:
+    int sum(int num1, int num2) {
+        return num1 + num2;
+    }
+};`},
+            { num:2469, title:"Convert the Temperature", time:"O(1)", space:"O(1)",
+              code:`#include <vector>
+using namespace std;
+
+class Solution {
+public:
+    vector<double> convertTemperature(double celsius) {
+        return { celsius + 273.15, celsius * 1.80 + 32.00 };
+    }
+};`},
+            { num:2520, title:"Count the Digits That Divide It", time:"O(log n)", space:"O(1)",
+              code:`class Solution {
+public:
+    int countDigits(int num) {
+        int count = 0, temp = num;
+        while (temp > 0) {
+            int d = temp % 10;
+            if (d != 0 && num % d == 0) count++;
+            temp /= 10;
+        }
+        return count;
+    }
+};`},
+            { num:2535, title:"Difference Between Element Sum and Digit Sum", time:"O(n log max)", space:"O(1)",
+              code:`#include <vector>
+#include <cmath>
+using namespace std;
+
+class Solution {
+public:
+    int differenceOfSum(vector<int>& nums) {
+        int elemSum = 0, digitSum = 0;
+        for (int n : nums) {
+            elemSum += n;
+            int temp = n;
+            while (temp > 0) {
+                digitSum += temp % 10;
+                temp /= 10;
+            }
+        }
+        return abs(elemSum - digitSum);
+    }
+};`},
+            { num:2652, title:"Sum Multiples", time:"O(n)", space:"O(1)",
+              code:`class Solution {
+public:
+    int sumOfMultiples(int n) {
+        int sum = 0;
+        for (int i = 1; i <= n; i++)
+            if (i % 3 == 0 || i % 5 == 0 || i % 7 == 0)
+                sum += i;
+        return sum;
+    }
+};`},
+            { num:3190, title:"Find Minimum Operations to Make Array Divisible by Three", time:"O(n)", space:"O(1)",
+              code:`#include <vector>
+using namespace std;
+
+class Solution {
+public:
+    int minimumOperations(vector<int>& nums) {
+        int ops = 0;
+        for (int n : nums) {
+            int r = n % 3;
+            if (r != 0) ops++;
+        }
+        return ops;
+    }
+};`},
+            { num:3289, title:"The Two Sneaky Numbers of Digitville", time:"O(n)", space:"O(n)",
+              code:`#include <vector>
+using namespace std;
+
+class Solution {
+public:
+    vector<int> getSneakyNumbers(vector<int>& nums) {
+        int n = (int)nums.size() - 2;
+        vector<int> freq(n, 0), res;
+        for (int x : nums) {
+            if (++freq[x] == 2)
+                res.push_back(x);
+        }
+        return res;
+    }
+};`},
+            { num:3658, title:"Minimum Operations to Make Array Values Equal to K", time:"O(n log n)", space:"O(n)",
+              code:`#include <vector>
+#include <set>
+using namespace std;
+
+class Solution {
+public:
+    int minOperations(vector<int>& nums, int k) {
+        set<int> distinct;
+        for (int n : nums) {
+            if (n < k) return -1;
+            if (n > k) distinct.insert(n);
+        }
+        return (int)distinct.size();
+    }
+};`}
+        ];
+
+        function toggleCard(idx) {
+            const container = document.getElementById('cw-' + idx);
+            const chevron = document.getElementById('ch-' + idx);
+            const isOpen = container.classList.toggle('open');
+            chevron.classList.toggle('open', isOpen);
+        }
+
+        function copyCode(idx, btn) {
+            const code = problems[idx].code;
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.innerHTML;
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        function expandAll() {
+            problems.forEach((_, i) => {
+                const card = document.getElementById('card-' + i);
+                if (card && card.style.display !== 'none') {
+                    document.getElementById('cw-' + i).classList.add('open');
+                    document.getElementById('ch-' + i).classList.add('open');
+                }
+            });
+        }
+
+        function collapseAll() {
+            problems.forEach((_, i) => {
+                document.getElementById('cw-' + i).classList.remove('open');
+                document.getElementById('ch-' + i).classList.remove('open');
+            });
+        }
+
+        function filterCards() {
+            const q = document.getElementById('search').value.toLowerCase().trim();
+            let visible = 0;
+            problems.forEach((p, i) => {
+                const card = document.getElementById('card-' + i);
+                const match = !q || String(p.num).includes(q) || p.title.toLowerCase().includes(q);
+                card.style.display = match ? '' : 'none';
+                if (match) visible++;
+            });
+            document.getElementById('count').textContent = `Showing ${visible} of ${problems.length} solutions`;
+        }
+
+        function renderCards() {
+            const container = document.getElementById('cards');
+            container.innerHTML = problems.map((p, i) => `
+                <div class="problem-card" id="card-${i}">
+                    <div class="card-header" onclick="toggleCard(${i})">
+                        <span class="num-badge">#${p.num}</span>
+                        <span class="problem-title">${p.title}</span>
+                        <div class="meta-tags">
+                            <span class="tag">${p.time}</span>
+                            <span class="tag">${p.space}</span>
+                        </div>
+                        <span class="chevron" id="ch-${i}">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        </span>
+                    </div>
+                    <div class="code-container" id="cw-${i}">
+                        <div class="code-content">
+                            <button class="copy-btn" onclick="copyCode(${i}, this)">Copy</button>
+                            <pre>${highlightCode(p.code)}</pre>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function highlightCode(code) {
+            // Simple regex-based highlight simulation
+            return code
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/\b(class|public|private|struct|using|namespace|return|if|else|for|while|do|int|long|double|float|char|void|bool|vector|unordered_map|string|set|abs|new|nullptr|int_max|int_min|long_long|size)\b/g, '<span class="k">$1</span>')
+                .replace(/\b(\d+)\b/g, '<span class="n">$1</span>')
+                .replace(/(\/\/.+)/g, '<span class="c">$1</span>')
+                .replace(/(".*?")/g, '<span class="s">$1</span>')
+                .replace(/(\w+)(?=\s*\()/g, '<span class="f">$1</span>');
+        }
+
+        renderCards();
+    </script>
+</body>
+</html>
