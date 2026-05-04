@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LeetCode C++ | Q1–500 Compendium</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@300;500;700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --bg: #030303;
@@ -34,7 +36,7 @@
 
         body {
             background: var(--bg);
-            background-image: 
+            background-image:
                 linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
             background-size: 40px 40px;
@@ -49,7 +51,10 @@
         body::after {
             content: "";
             position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
             background-size: 100% 4px;
             z-index: 9999;
@@ -433,9 +438,17 @@
             letter-spacing: 1px;
         }
 
-        .diff-easy { color: var(--diff-easy); }
-        .diff-medium { color: var(--diff-medium); }
-        .diff-hard { color: var(--diff-hard); }
+        .diff-easy {
+            color: var(--diff-easy);
+        }
+
+        .diff-medium {
+            color: var(--diff-medium);
+        }
+
+        .diff-hard {
+            color: var(--diff-hard);
+        }
 
         .chevron {
             color: var(--dim);
@@ -504,11 +517,27 @@
         }
 
         /* Syntax highlight classes */
-        .k { color: var(--accent); font-weight: 700; }
-        .cmt { color: #6b7280; font-style: italic; }
-        .s { color: var(--diff-medium); }
-        .n { color: #ec4899; }
-        .f { color: #8b5cf6; }
+        .k {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .cmt {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .s {
+            color: var(--diff-medium);
+        }
+
+        .n {
+            color: #ec4899;
+        }
+
+        .f {
+            color: #8b5cf6;
+        }
 
         /* ─── ANIMATIONS ─── */
         @keyframes fadeDown {
@@ -631,25 +660,34 @@
         <header>
             <h1>LeetCode C++ Solutions</h1>
             <p>Q1 – Q100 Complete Compendium</p>
-            <div class="ai-badge"><span class="ai-dot"></span> 100% Hardcoded for Offline Speed</div>
+            <div class="ai-badge"><span class="ai-dot"></span> Built By Sai Abhijeet</div>
         </header>
 
         <div class="controls">
             <div class="search-container">
                 <div class="search-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
                 </div>
-                <input type="text" id="search" placeholder="Search by problem number or keywords..." oninput="filterAll()">
+                <input type="text" id="search" placeholder="Search by problem number or keywords..."
+                    oninput="filterAll()">
                 <div class="search-glow"></div>
             </div>
             <div class="btn-row">
                 <div class="custom-select" id="difficultyDropdown">
                     <div class="select-trigger" onclick="toggleDropdown()">
                         <span id="selectedDiffText">All Difficulties</span>
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m6 9 6 6 6-6" />
+                        </svg>
                     </div>
                     <div class="select-options" id="dropdownOptions">
-                        <div class="select-option selected" onclick="selectOption('', 'All Difficulties', this)">All Difficulties</div>
+                        <div class="select-option selected" onclick="selectOption('', 'All Difficulties', this)">All
+                            Difficulties</div>
                         <div class="select-option" onclick="selectOption('Easy', 'Easy', this)">Easy</div>
                         <div class="select-option" onclick="selectOption('Medium', 'Medium', this)">Medium</div>
                         <div class="select-option" onclick="selectOption('Hard', 'Hard', this)">Hard</div>
@@ -689,11 +727,11 @@
             currentDifficulty = val;
             document.getElementById('selectedDiffText').textContent = text;
             document.getElementById('dropdownOptions').classList.remove('open');
-            
+
             // UI state
             document.querySelectorAll('.select-option').forEach(opt => opt.classList.remove('selected'));
             el.classList.add('selected');
-            
+
             filterAll();
         }
 
