@@ -308,6 +308,94 @@
             .meta-tags { display: none; }
             .problem-title { font-size: 1rem; }
         }
+
+        /* Number Grid Styles */
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 1rem;
+            margin-bottom: 3rem;
+            animation: fadeIn 1.2s ease-in;
+        }
+
+        .number-box {
+            aspect-ratio: 1 / 1;
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .number-box:hover {
+            border-color: var(--accent-primary);
+            background: var(--card-hover);
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 12px 25px rgba(124, 77, 255, 0.3);
+        }
+
+        .number-box .copy-label {
+            position: absolute;
+            bottom: -20px;
+            font-size: 0.65rem;
+            font-weight: 500;
+            color: var(--accent-secondary);
+            transition: bottom 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .number-box:hover .copy-label {
+            bottom: 8px;
+        }
+
+        .number-box.copied {
+            background: linear-gradient(135deg, #00c853, #64dd17);
+            border-color: #00c853;
+            color: #fff;
+            transform: scale(0.95);
+        }
+
+        .number-box.copied .copy-label {
+            display: none;
+        }
+
+        .number-box.copied::before {
+            content: "✓";
+            font-size: 1.2rem;
+        }
+        
+        .section-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            padding-left: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--glass-border), transparent);
+        }
     </style>
 </head>
 <body>
@@ -332,6 +420,11 @@
         </div>
 
         <div class="status-bar" id="count">Showing 30 solutions</div>
+        
+        <div class="section-title">Quick Copy Grid</div>
+        <div id="number-grid" class="number-grid"></div>
+
+        <div class="section-title">Detailed Solutions</div>
         <div id="cards"></div>
     </div>
 
@@ -864,11 +957,16 @@ public:
         function copyCode(idx, btn) {
             const code = problems[idx].code;
             navigator.clipboard.writeText(code).then(() => {
-                const originalText = btn.innerHTML;
-                btn.textContent = 'Copied!';
+                const isNumberBox = btn.classList.contains('number-box');
+                const originalContent = btn.innerHTML;
+                
                 btn.classList.add('copied');
+                if (!isNumberBox) {
+                    btn.textContent = 'Copied!';
+                }
+                
                 setTimeout(() => {
-                    btn.innerHTML = originalText;
+                    btn.innerHTML = originalContent;
                     btn.classList.remove('copied');
                 }, 2000);
             });
@@ -896,8 +994,12 @@ public:
             let visible = 0;
             problems.forEach((p, i) => {
                 const card = document.getElementById('card-' + i);
+                const nbox = document.getElementById('nbox-' + i);
                 const match = !q || String(p.num).includes(q) || p.title.toLowerCase().includes(q);
+                
                 card.style.display = match ? '' : 'none';
+                if (nbox) nbox.style.display = match ? 'flex' : 'none';
+                
                 if (match) visible++;
             });
             document.getElementById('count').textContent = `Showing ${visible} of ${problems.length} solutions`;
@@ -928,6 +1030,16 @@ public:
             `).join('');
         }
 
+        function renderNumberGrid() {
+            const container = document.getElementById('number-grid');
+            container.innerHTML = problems.map((p, i) => `
+                <div class="number-box" id="nbox-${i}" onclick="copyCode(${i}, this)" title="${p.title}">
+                    <span>${p.num}</span>
+                    <span class="copy-label">Copy</span>
+                </div>
+            `).join('');
+        }
+
         function highlightCode(code) {
             // Simple regex-based highlight simulation
             return code
@@ -939,6 +1051,7 @@ public:
                 .replace(/(\w+)(?=\s*\()/g, '<span class="f">$1</span>');
         }
 
+        renderNumberGrid();
         renderCards();
     </script>
 </body>
