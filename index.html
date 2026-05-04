@@ -1,229 +1,458 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LeetCode C++ Solutions | Premium Compendium</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>LeetCode C++ | Q1–500 Compendium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #0a0a0c;
-            --card-bg: rgba(20, 20, 25, 0.7);
-            --border-glow: rgba(124, 77, 255, 0.3);
-            --accent-primary: #7C4DFF;
-            --accent-secondary: #00E5FF;
-            --accent-tertiary: #FF4081;
-            --text-main: #e0e0e6;
-            --text-dim: #9494a5;
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --card-hover: rgba(30, 30, 40, 0.9);
-            --font-sans: 'Inter', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
+            --bg: #030303;
+            --surface: #0a0a0c;
+            --surface2: #121217;
+            --border: rgba(0, 243, 255, 0.1);
+            --border-accent: rgba(0, 243, 255, 0.4);
+            --accent: #00f3ff;
+            --accent-glow: rgba(0, 243, 255, 0.2);
+            --danger: #ff0055;
+            --text: #e0e0e0;
+            --dim: #707080;
+            --diff-easy: #00ff41;
+            --diff-medium: #ffea00;
+            --diff-hard: #ff0055;
+            --mono: 'Space Mono', monospace;
+            --sans: 'Space Grotesk', sans-serif;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            cursor: crosshair;
         }
 
         body {
-            background-color: var(--bg-dark);
+            background: var(--bg);
             background-image: 
-                radial-gradient(circle at 0% 0%, rgba(124, 77, 255, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 100% 100%, rgba(0, 229, 255, 0.05) 0%, transparent 40%);
-            color: var(--text-main);
-            font-family: var(--font-sans);
-            line-height: 1.6;
+                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            color: var(--text);
+            font-family: var(--sans);
             min-height: 100vh;
-            padding: 2rem 1rem;
+            padding: 2rem 1rem 4rem;
+            overflow-x: hidden;
+        }
+
+        /* ─── SCANLINE ─── */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.1;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
+            position: relative;
         }
 
+        /* ─── HEADER ─── */
         header {
             text-align: center;
-            margin-bottom: 3rem;
-            animation: fadeInDown 0.8s ease-out;
+            margin-bottom: 4rem;
+            position: relative;
         }
 
         header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #fff 0%, var(--text-dim) 100%);
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 800;
+            letter-spacing: -2px;
+            text-transform: uppercase;
+            background: linear-gradient(to bottom, #fff 40%, var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
+            filter: drop-shadow(0 0 15px var(--accent-glow));
+            font-family: var(--mono);
         }
 
         header p {
-            color: var(--text-dim);
-            font-size: 1.1rem;
+            color: var(--accent);
+            margin-top: .5rem;
+            font-size: 0.8rem;
+            font-family: var(--mono);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            opacity: 0.8;
         }
 
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .6rem;
+            margin-top: 1.5rem;
+            padding: .5rem 1.2rem;
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid var(--border-accent);
+            border-radius: 4px;
+            font-size: .7rem;
+            color: var(--accent);
+            font-family: var(--mono);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ai-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+            animation: pulse 2s infinite;
+        }
+
+        /* ─── CONTROLS ─── */
         .controls {
             position: sticky;
             top: 1rem;
             z-index: 100;
-            background: rgba(10, 10, 12, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(10, 10, 12, 0.9);
+            backdrop-filter: blur(20px);
             padding: 1rem;
-            border-radius: 1.5rem;
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--border-accent);
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
             margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            animation: fadeIn 1s ease-in;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
         }
 
-        .search-wrap {
-            flex: 1;
+        .search-container {
             position: relative;
-            min-width: 250px;
-        }
-
-        .search-wrap input {
-            width: 100%;
-            height: 48px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            border-radius: 1rem;
-            padding: 0 1.25rem;
-            color: #fff;
-            font-family: var(--font-sans);
-            font-size: 0.95rem;
-            transition: all 0.3s;
-        }
-
-        .search-wrap input:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 15px var(--border-glow);
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .btn-group {
+            flex: 1;
+            min-width: 280px;
             display: flex;
-            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            width: 1.2rem;
+            height: 1.2rem;
+            color: var(--accent);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        #search {
+            width: 100%;
+            height: 44px;
+            background: #000;
+            border: 1px solid var(--border);
+            padding: 0 1rem 0 3rem;
+            color: var(--accent);
+            font-family: var(--mono);
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        #search:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap
         }
 
         .btn {
-            height: 48px;
-            padding: 0 1.5rem;
-            border-radius: 1rem;
-            border: 1px solid var(--glass-border);
+            height: 44px;
+            padding: 0 1.2rem;
+            border: 1px solid var(--border);
             background: transparent;
-            color: var(--text-main);
-            font-weight: 500;
-            font-size: 0.9rem;
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: center;
         }
 
         .btn:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: var(--text-dim);
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(0, 243, 255, 0.05);
         }
 
-        .btn.active {
-            background: var(--accent-primary);
-            border-color: var(--accent-primary);
-            color: #fff;
+        select.btn {
+            appearance: none;
+            background: #000;
+            padding-right: 2rem;
+            position: relative;
         }
 
-        .status-bar {
-            font-size: 0.85rem;
+        /* ─── CUSTOM DROPDOWN ─── */
+        .custom-select {
+            position: relative;
+            min-width: 180px;
+            font-family: var(--mono);
+        }
+
+        .select-trigger {
+            height: 44px;
+            padding: 0 1.2rem;
+            border: 1px solid var(--border);
+            background: #000;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .select-trigger:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .select-options {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            right: 0;
+            background: #08080a;
+            border: 1px solid var(--accent);
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        }
+
+        .select-options.open {
+            display: block;
+        }
+
+        .select-option {
+            padding: 0.8rem 1.2rem;
+            font-size: 0.75rem;
             color: var(--text-dim);
-            margin-bottom: 1rem;
-            padding-left: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.05);
         }
 
-        .problem-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid var(--glass-border);
-            border-radius: 1.25rem;
-            margin-bottom: 1rem;
-            overflow: hidden;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s;
+        .select-option:last-child {
+            border-bottom: none;
         }
 
-        .problem-card:hover {
-            border-color: var(--border-glow);
-            transform: translateY(-4px) scale(1.01);
-            background: var(--card-hover);
+        .select-option:hover {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--accent);
+            padding-left: 1.5rem;
         }
 
-        .card-header {
-            padding: 1.25rem 1.5rem;
+        .select-option.selected {
+            color: var(--accent);
+            background: rgba(0, 243, 255, 0.05);
+        }
+
+        /* ─── STATUS ─── */
+        .status-bar {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: var(--dim);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             display: flex;
             align-items: center;
             gap: 1rem;
+        }
+
+        .status-bar span {
+            color: var(--accent);
+        }
+
+        /* ─── SECTION LABEL ─── */
+        .section-label {
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--dim);
+            padding-left: .25rem;
+            margin: .5rem 0 .75rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border), transparent)
+        }
+
+        /* ─── NUMBER GRID ─── */
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(62px, 1fr));
+            gap: .6rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .nbox {
+            aspect-ratio: 1;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--mono);
+            font-size: 0.9rem;
+            color: var(--dim);
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .nbox:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+            color: var(--accent);
+            z-index: 10;
+        }
+
+        .nbox.cached {
+            color: var(--text);
+            border-color: var(--border-accent);
+        }
+
+        .nbox.copied-box {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        .nbox .tip {
+            position: absolute;
+            bottom: -16px;
+            font-size: .55rem;
+            color: var(--accent);
+            transition: bottom .25s;
+            text-transform: uppercase;
+            letter-spacing: .05em
+        }
+
+        .nbox:hover .tip {
+            bottom: 6px
+        }
+
+        /* ─── CARDS ─── */
+        .problem-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .problem-card:hover {
+            border-color: var(--border-accent);
+            transform: translateX(5px);
+            box-shadow: -5px 0 0 var(--accent);
+        }
+
+        .card-header {
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
             cursor: pointer;
             user-select: none;
+            position: relative;
         }
 
         .num-badge {
-            background: linear-gradient(135deg, var(--accent-primary), #9c7aff);
-            color: #fff;
+            font-family: var(--mono);
             font-size: 0.75rem;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 8px;
+            color: var(--accent);
+            border: 1px solid var(--border-accent);
+            padding: 2px 8px;
             min-width: 45px;
             text-align: center;
-            box-shadow: 0 4px 10px rgba(124, 77, 255, 0.3);
         }
 
         .problem-title {
-            font-size: 1.1rem;
-            font-weight: 600;
             flex: 1;
-            letter-spacing: -0.01em;
+            font-weight: 500;
+            font-size: 1rem;
+            font-family: var(--sans);
+            letter-spacing: 0.5px;
+            color: #fff;
         }
 
         .meta-tags {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.75rem;
+            align-items: center;
         }
 
         .tag {
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--text-dim);
-            padding: 4px 10px;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            color: var(--dim);
+            text-transform: uppercase;
         }
 
+        .diff-tag {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .diff-easy { color: var(--diff-easy); }
+        .diff-medium { color: var(--diff-medium); }
+        .diff-hard { color: var(--diff-hard); }
+
         .chevron {
-            color: var(--text-dim);
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--dim);
+            transition: transform 0.3s;
         }
 
         .chevron.open {
             transform: rotate(180deg);
-            color: var(--accent-primary);
+            color: var(--accent);
         }
 
+        /* ─── CODE CONTAINER ─── */
         .code-container {
             display: grid;
             grid-template-rows: 0fr;
             transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #000;
         }
 
         .code-container.open {
@@ -233,826 +462,406 @@
         .code-content {
             overflow: hidden;
             position: relative;
-            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid var(--border);
         }
 
+        /* ─── CODE ─── */
+        /* ─── CODE ─── */
         .copy-btn {
             position: absolute;
             top: 1rem;
-            right: 1.5rem;
-            padding: 6px 14px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--glass-border);
-            color: var(--text-main);
-            font-size: 0.75rem;
-            font-weight: 600;
+            right: 1rem;
+            padding: 5px 12px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--accent);
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             cursor: pointer;
-            transition: all 0.2s;
             z-index: 10;
+            transition: all 0.2s;
         }
 
         .copy-btn:hover {
-            background: var(--accent-primary);
-            border-color: var(--accent-primary);
+            border-color: var(--accent);
+            background: rgba(0, 243, 255, 0.05);
         }
 
-        .copy-btn.copied {
-            background: #00C853;
-            border-color: #00C853;
+        .copy-btn.copied-btn {
+            border-color: var(--diff-easy);
+            color: var(--diff-easy);
         }
 
         pre {
-            padding: 1.5rem;
-            font-family: var(--font-mono);
-            font-size: 0.85rem;
-            line-height: 1.7;
+            padding: 2.5rem 1.25rem 1.25rem;
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            line-height: 1.6;
             overflow-x: auto;
-            color: #d1d1e0;
+            color: #d1d5db;
         }
 
-        /* Mock Syntax Highlighting */
-        .k { color: #c678dd; } /* keyword */
-        .c { color: #5c6370; font-style: italic; } /* comment */
-        .s { color: #98c379; } /* string */
-        .n { color: #d19a66; } /* number */
-        .t { color: #61afef; } /* type */
-        .f { color: #e06c75; } /* function */
+        /* Syntax highlight classes */
+        .k { color: var(--accent); font-weight: 700; }
+        .cmt { color: #6b7280; font-style: italic; }
+        .s { color: var(--diff-medium); }
+        .n { color: #ec4899; }
+        .f { color: #8b5cf6; }
 
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* ─── ANIMATIONS ─── */
+        @keyframes fadeDown {
+            from {
+                opacity: 0;
+                transform: translateY(-18px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
         }
 
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .4
+            }
+        }
+
+        @keyframes borderPulse {
+
+            0%,
+            100% {
+                border-color: var(--accent)
+            }
+
+            50% {
+                border-color: rgba(99, 179, 237, .2)
+            }
+        }
+
+        /* ─── SCROLLBAR ─── */
         ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px
         }
+
         ::-webkit-scrollbar-track {
-            background: transparent;
+            background: transparent
         }
+
         ::-webkit-scrollbar-thumb {
-            background: var(--glass-border);
-            border-radius: 4px;
+            background: var(--border);
+            border-radius: 3px
         }
+
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, .15)
         }
 
-        @media (max-width: 600px) {
-            .meta-tags { display: none; }
-            .problem-title { font-size: 1rem; }
+        @media(max-width:600px) {
+            .meta-tags {
+                display: none
+            }
+
+            .problem-title {
+                font-size: .9rem
+            }
+
+            .nbox {
+                font-size: .78rem
+            }
         }
 
-        /* Number Grid Styles */
-        .number-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-            gap: 1rem;
-            margin-bottom: 3rem;
-            animation: fadeIn 1.2s ease-in;
-        }
-
-        .number-box {
-            aspect-ratio: 1 / 1;
-            background: var(--card-bg);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid var(--glass-border);
-            border-radius: 1rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--text-main);
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .number-box:hover {
-            border-color: var(--accent-primary);
-            background: var(--card-hover);
-            transform: translateY(-8px) scale(1.05);
-            box-shadow: 0 12px 25px rgba(124, 77, 255, 0.3);
-        }
-
-        .number-box .copy-label {
-            position: absolute;
-            bottom: -20px;
-            font-size: 0.65rem;
-            font-weight: 500;
-            color: var(--accent-secondary);
-            transition: bottom 0.3s;
+        /* ─── TOAST ─── */
+        #toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #000;
+            color: var(--accent);
+            padding: 0.75rem 1.5rem;
+            font-family: var(--mono);
+            font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 2px;
+            border: 1px solid var(--accent);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+            z-index: 10000;
+            box-shadow: 0 0 20px var(--accent-glow);
         }
 
-        .number-box:hover .copy-label {
-            bottom: 8px;
-        }
-
-        .number-box.copied {
-            background: linear-gradient(135deg, #00c853, #64dd17);
-            border-color: #00c853;
-            color: #fff;
-            transform: scale(0.95);
-        }
-
-        .number-box.copied .copy-label {
-            display: none;
-        }
-
-        .number-box.copied::before {
-            content: "✓";
-            font-size: 1.2rem;
-        }
-        
-        .section-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 1rem;
-            padding-left: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .section-title::after {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: linear-gradient(90deg, var(--glass-border), transparent);
+        #toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
         }
     </style>
 </head>
+
 <body>
     <div class="container">
+
         <header>
-            <h1>LeetCode C++</h1>
-            <p>Premium algorithm solutions compendium</p>
+            <h1>LeetCode C++ Solutions</h1>
+            <p>Q1 – Q100 Complete Compendium</p>
+            <div class="ai-badge"><span class="ai-dot"></span> 100% Hardcoded for Offline Speed</div>
         </header>
 
         <div class="controls">
-            <div class="search-wrap">
-                <input type="text" id="search" placeholder="Search problems..." oninput="filterCards()">
+            <div class="search-container">
+                <div class="search-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </div>
+                <input type="text" id="search" placeholder="Search by problem number or keywords..." oninput="filterAll()">
+                <div class="search-glow"></div>
             </div>
-            <div class="btn-group">
-                <button class="btn" onclick="expandAll()" title="Expand All">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
-                </button>
-                <button class="btn" onclick="collapseAll()" title="Collapse All">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14h6v6"/><path d="M20 10h-6V4"/><path d="M14 10l7-7"/><path d="M10 14l-7 7"/></svg>
-                </button>
+            <div class="btn-row">
+                <div class="custom-select" id="difficultyDropdown">
+                    <div class="select-trigger" onclick="toggleDropdown()">
+                        <span id="selectedDiffText">All Difficulties</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                    </div>
+                    <div class="select-options" id="dropdownOptions">
+                        <div class="select-option selected" onclick="selectOption('', 'All Difficulties', this)">All Difficulties</div>
+                        <div class="select-option" onclick="selectOption('Easy', 'Easy', this)">Easy</div>
+                        <div class="select-option" onclick="selectOption('Medium', 'Medium', this)">Medium</div>
+                        <div class="select-option" onclick="selectOption('Hard', 'Hard', this)">Hard</div>
+                    </div>
+                </div>
+                <button class="btn" onclick="expandAll()" title="Expand All">↕ Expand</button>
+                <button class="btn" onclick="collapseAll()" title="Collapse All">↕ Collapse</button>
             </div>
         </div>
 
-        <div class="status-bar" id="count">Showing 30 solutions</div>
-        
-        <div class="section-title">Quick Copy Grid</div>
-        <div id="number-grid" class="number-grid"></div>
+        <div class="status-bar" id="statusBar">Loading solutions...</div>
 
-        <div class="section-title">Detailed Solutions</div>
+        <div class="section-label">Quick Copy Grid — click to copy solution instantly</div>
+        <div id="numberGrid" class="number-grid"></div>
+
+        <div class="section-label">Detailed Solutions</div>
         <div id="cards"></div>
+
     </div>
 
+    <div id="toast">Copied!</div>
+
+    <script src="data.js"></script>
     <script>
-        const problems = [
-            { num:1, title:"Two Sum", time:"O(n)", space:"O(n)",
-              code:`#include <vector>
-#include <unordered_map>
-using namespace std;
+        // State
+        let visibleProblems = [...allProblems];
+        let currentDifficulty = "";
 
-class Solution {
-public:
-    vector<int> twoSum(vector<int>& nums, int target) {
-        unordered_map<int, int> seen;
-        for (int i = 0; i < (int)nums.size(); i++) {
-            int complement = target - nums[i];
-            if (seen.count(complement))
-                return { seen[complement], i };
-            seen[nums[i]] = i;
-        }
-        return {};
-    }
-};`},
-            { num:2, title:"Add Two Numbers", time:"O(max(m,n))", space:"O(max(m,n))",
-              code:`struct ListNode {
-    int val;
-    ListNode* next;
-    ListNode(int x) : val(x), next(nullptr) {}
-};
+        function diffClass(d) { return d === 'Easy' ? 'diff-easy' : d === 'Hard' ? 'diff-hard' : 'diff-medium'; }
 
-class Solution {
-public:
-    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        ListNode dummy(0);
-        ListNode* cur = &dummy;
-        int carry = 0;
-        while (l1 || l2 || carry) {
-            int sum = carry;
-            if (l1) { sum += l1->val; l1 = l1->next; }
-            if (l2) { sum += l2->val; l2 = l2->next; }
-            carry = sum / 10;
-            cur->next = new ListNode(sum % 10);
-            cur = cur->next;
+        // ─── CUSTOM DROPDOWN LOGIC ───
+        function toggleDropdown() {
+            document.getElementById('dropdownOptions').classList.toggle('open');
         }
-        return dummy.next;
-    }
-};`},
-            { num:3, title:"Longest Substring Without Repeating Characters", time:"O(n)", space:"O(min(n,|Σ|))",
-              code:`#include <string>
-#include <unordered_map>
-using namespace std;
 
-class Solution {
-public:
-    int lengthOfLongestSubstring(string s) {
-        unordered_map<char, int> last;
-        int maxLen = 0, left = 0;
-        for (int right = 0; right < (int)s.size(); right++) {
-            if (last.count(s[right]) && last[s[right]] >= left)
-                left = last[s[right]] + 1;
-            last[s[right]] = right;
-            maxLen = max(maxLen, right - left + 1);
+        function selectOption(val, text, el) {
+            currentDifficulty = val;
+            document.getElementById('selectedDiffText').textContent = text;
+            document.getElementById('dropdownOptions').classList.remove('open');
+            
+            // UI state
+            document.querySelectorAll('.select-option').forEach(opt => opt.classList.remove('selected'));
+            el.classList.add('selected');
+            
+            filterAll();
         }
-        return maxLen;
-    }
-};`},
-            { num:7, title:"Reverse Integer", time:"O(log x)", space:"O(1)",
-              code:`#include <climits>
-using namespace std;
 
-class Solution {
-public:
-    int reverse(int x) {
-        int rev = 0;
-        while (x != 0) {
-            int digit = x % 10;
-            x /= 10;
-            if (rev > INT_MAX / 10 || (rev == INT_MAX / 10 && digit > 7))
-                return 0;
-            if (rev < INT_MIN / 10 || (rev == INT_MIN / 10 && digit < -8))
-                return 0;
-            rev = rev * 10 + digit;
-        }
-        return rev;
-    }
-};`},
-            { num:9, title:"Palindrome Number", time:"O(log n)", space:"O(1)",
-              code:`class Solution {
-public:
-    bool isPalindrome(int x) {
-        if (x < 0 || (x % 10 == 0 && x != 0)) return false;
-        int reversed = 0;
-        while (x > reversed) {
-            reversed = reversed * 10 + x % 10;
-            x /= 10;
-        }
-        return x == reversed || x == reversed / 10;
-    }
-};`},
-            { num:13, title:"Roman to Integer", time:"O(n)", space:"O(1)",
-              code:`#include <string>
-#include <unordered_map>
-using namespace std;
-
-class Solution {
-public:
-    int romanToInt(string s) {
-        unordered_map<char, int> val = {
-            {'I',1},{'V',5},{'X',10},{'L',50},
-            {'C',100},{'D',500},{'M',1000}
-        };
-        int result = 0;
-        for (int i = 0; i < (int)s.size(); i++) {
-            if (i + 1 < (int)s.size() && val[s[i]] < val[s[i+1]])
-                result -= val[s[i]];
-            else
-                result += val[s[i]];
-        }
-        return result;
-    }
-};`},
-            { num:29, title:"Divide Two Integers", time:"O(log² n)", space:"O(1)",
-              code:`#include <climits>
-using namespace std;
-
-class Solution {
-public:
-    int divide(int dividend, int divisor) {
-        if (dividend == INT_MIN && divisor == -1) return INT_MAX;
-        long a = abs((long)dividend), b = abs((long)divisor);
-        int sign = (dividend > 0) == (divisor > 0) ? 1 : -1;
-        long result = 0;
-        while (a >= b) {
-            long temp = b, multiple = 1;
-            while (a >= (temp << 1)) {
-                temp <<= 1;
-                multiple <<= 1;
+        // Close dropdown when clicking outside
+        window.addEventListener('click', (e) => {
+            if (!document.getElementById('difficultyDropdown').contains(e.target)) {
+                document.getElementById('dropdownOptions').classList.remove('open');
             }
-            a -= temp;
-            result += multiple;
+        });
+
+        // ─── RENDER NUMBER GRID ───
+        function renderGrid() {
+            const grid = document.getElementById('numberGrid');
+            grid.innerHTML = allProblems.map(([num, title, diff]) => {
+                return `<div class="nbox cached" id="nbox-${num}" onclick="handleNboxClick(${num})" title="${title} (${diff})">
+      <span>${num}</span>
+      <span class="tip">Ready</span>
+    </div>`;
+            }).join('');
         }
-        return (int)(sign * result);
-    }
-};`},
-            { num:35, title:"Search Insert Position", time:"O(log n)", space:"O(1)",
-              code:`#include <vector>
-using namespace std;
 
-class Solution {
-public:
-    int searchInsert(vector<int>& nums, int target) {
-        int left = 0, right = (int)nums.size() - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] == target) return mid;
-            else if (nums[mid] < target) left = mid + 1;
-            else right = mid - 1;
+        // ─── RENDER CARDS ───
+        function renderCards() {
+            const container = document.getElementById('cards');
+            container.innerHTML = visibleProblems.map(([num, title, diff]) => {
+                const hc = hardcoded[num];
+                return `<div class="problem-card" id="card-${num}">
+      <div class="card-header" onclick="toggleCard(${num})">
+        <span class="num-badge">#${num}</span>
+        <span class="problem-title">${title}</span>
+        <div class="meta-tags">
+          ${hc ? `<span class="tag">${hc.time}</span><span class="tag">${hc.space}</span>` : ''}
+          <span class="tag diff-tag ${diffClass(diff)}">${diff}</span>
+        </div>
+        <span class="chevron" id="ch-${num}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </span>
+      </div>
+      <div class="code-container" id="cw-${num}">
+        <div class="code-content" id="cc-${num}">
+          <button class="copy-btn" onclick="copyCode(${num},this)">Copy</button>
+          <pre>${hlCode(hc ? hc.code : '// Solution not found')}</pre>
+        </div>
+      </div>
+    </div>`;
+            }).join('');
         }
-        return left;
-    }
-};`},
-            { num:51, title:"N-Queens", time:"O(n!)", space:"O(n)",
-              code:`#include <vector>
-#include <string>
-using namespace std;
 
-class Solution {
-    vector<vector<string>> res;
-    void solve(int row, int n, vector<string>& board,
-               vector<bool>& col, vector<bool>& d1, vector<bool>& d2) {
-        if (row == n) { res.push_back(board); return; }
-        for (int c = 0; c < n; c++) {
-            if (col[c] || d1[row-c+n] || d2[row+c]) continue;
-            board[row][c] = 'Q';
-            col[c] = d1[row-c+n] = d2[row+c] = true;
-            solve(row+1, n, board, col, d1, d2);
-            board[row][c] = '.';
-            col[c] = d1[row-c+n] = d2[row+c] = false;
+        // ─── TOGGLE CARD ───
+        function toggleCard(num) {
+            const cw = document.getElementById('cw-' + num);
+            const ch = document.getElementById('ch-' + num);
+            const isOpen = cw.classList.toggle('open');
+            ch.classList.toggle('open', isOpen);
         }
-    }
-public:
-    vector<vector<string>> solveNQueens(int n) {
-        vector<string> board(n, string(n, '.'));
-        vector<bool> col(n,false), d1(2*n,false), d2(2*n,false);
-        solve(0, n, board, col, d1, d2);
-        return res;
-    }
-};`},
-            { num:58, title:"Length of Last Word", time:"O(n)", space:"O(1)",
-              code:`#include <string>
-using namespace std;
 
-class Solution {
-public:
-    int lengthOfLastWord(string s) {
-        int i = (int)s.size() - 1, len = 0;
-        while (i >= 0 && s[i] == ' ') i--;
-        while (i >= 0 && s[i] != ' ') { len++; i--; }
-        return len;
-    }
-};`},
-            { num:67, title:"Add Binary", time:"O(max(m,n))", space:"O(max(m,n))",
-              code:`#include <string>
-#include <algorithm>
-using namespace std;
-
-class Solution {
-public:
-    string addBinary(string a, string b) {
-        string res = "";
-        int i = (int)a.size()-1, j = (int)b.size()-1, carry = 0;
-        while (i >= 0 || j >= 0 || carry) {
-            int sum = carry;
-            if (i >= 0) sum += a[i--] - '0';
-            if (j >= 0) sum += b[j--] - '0';
-            res += (char)('0' + sum % 2);
-            carry = sum / 2;
+        // ─── COPY ───
+        async function copyCode(num, btn) {
+            const hc = hardcoded[num];
+            if (!hc) return;
+            try {
+                await navigator.clipboard.writeText(hc.code);
+                btn.classList.add('copied-btn');
+                btn.textContent = 'Copied!';
+                showToast('Copied #' + num + ' to clipboard');
+                setTimeout(() => { btn.classList.remove('copied-btn'); btn.textContent = 'Copy'; }, 2000);
+            } catch (e) { }
         }
-        reverse(res.begin(), res.end());
-        return res;
-    }
-};`},
-            { num:78, title:"Subsets", time:"O(n·2ⁿ)", space:"O(n·2ⁿ)",
-              code:`#include <vector>
-using namespace std;
 
-class Solution {
-public:
-    vector<vector<int>> subsets(vector<int>& nums) {
-        int n = (int)nums.size();
-        vector<vector<int>> result;
-        for (int mask = 0; mask < (1 << n); mask++) {
-            vector<int> subset;
-            for (int i = 0; i < n; i++)
-                if (mask & (1 << i))
-                    subset.push_back(nums[i]);
-            result.push_back(subset);
-        }
-        return result;
-    }
-};`},
-            { num:125, title:"Valid Palindrome", time:"O(n)", space:"O(1)",
-              code:`#include <string>
-#include <cctype>
-using namespace std;
+        async function handleNboxClick(num) {
+            const nbox = document.getElementById('nbox-' + num);
+            const hc = hardcoded[num];
+            if (!hc) return;
 
-class Solution {
-public:
-    bool isPalindrome(string s) {
-        int left = 0, right = (int)s.size() - 1;
-        while (left < right) {
-            while (left < right && !isalnum(s[left]))  left++;
-            while (left < right && !isalnum(s[right])) right--;
-            if (tolower(s[left]) != tolower(s[right])) return false;
-            left++; right--;
-        }
-        return true;
-    }
-};`},
-            { num:136, title:"Single Number", time:"O(n)", space:"O(1)",
-              code:`#include <vector>
-using namespace std;
-
-class Solution {
-public:
-    int singleNumber(vector<int>& nums) {
-        int result = 0;
-        for (int n : nums) result ^= n;
-        return result;
-    }
-};`},
-            { num:151, title:"Reverse Words in a String", time:"O(n)", space:"O(n)",
-              code:`#include <string>
-#include <sstream>
-#include <vector>
-using namespace std;
-
-class Solution {
-public:
-    string reverseWords(string s) {
-        istringstream iss(s);
-        vector<string> words;
-        string word;
-        while (iss >> word) words.push_back(word);
-        string res = "";
-        for (int i = (int)words.size()-1; i >= 0; i--) {
-            if (i != (int)words.size()-1) res += " ";
-            res += words[i];
-        }
-        return res;
-    }
-};`},
-            { num:179, title:"Largest Number", time:"O(n log n)", space:"O(n)",
-              code:`#include <vector>
-#include <string>
-#include <algorithm>
-using namespace std;
-
-class Solution {
-public:
-    string largestNumber(vector<int>& nums) {
-        vector<string> strs;
-        for (int n : nums) strs.push_back(to_string(n));
-        sort(strs.begin(), strs.end(),
-             [](const string& a, const string& b) {
-                 return a + b > b + a;
-             });
-        if (strs[0] == "0") return "0";
-        string res = "";
-        for (auto& s : strs) res += s;
-        return res;
-    }
-};`},
-            { num:204, title:"Count Primes", time:"O(n log log n)", space:"O(n)",
-              code:`#include <vector>
-using namespace std;
-
-class Solution {
-public:
-    int countPrimes(int n) {
-        if (n < 2) return 0;
-        vector<bool> isPrime(n, true);
-        isPrime[0] = isPrime[1] = false;
-        for (int i = 2; (long long)i*i < n; i++) {
-            if (!isPrime[i]) continue;
-            for (int j = i*i; j < n; j += i)
-                isPrime[j] = false;
-        }
-        int count = 0;
-        for (bool p : isPrime) if (p) count++;
-        return count;
-    }
-};`},
-            { num:268, title:"Missing Number", time:"O(n)", space:"O(1)",
-              code:`#include <vector>
-using namespace std;
-
-class Solution {
-public:
-    int missingNumber(vector<int>& nums) {
-        int n = (int)nums.size();
-        int expected = n * (n + 1) / 2;
-        int actual = 0;
-        for (int x : nums) actual += x;
-        return expected - actual;
-    }
-};`},
-            { num:328, title:"Odd Even Linked List", time:"O(n)", space:"O(1)",
-              code:`struct ListNode {
-    int val; ListNode* next;
-    ListNode(int x) : val(x), next(nullptr) {}
-};
-
-class Solution {
-public:
-    ListNode* oddEvenList(ListNode* head) {
-        if (!head) return head;
-        ListNode* odd = head;
-        ListNode* even = head->next;
-        ListNode* evenHead = even;
-        while (even && even->next) {
-            odd->next  = even->next;
-            odd = odd->next;
-            even->next = odd->next;
-            even = even->next;
-        }
-        odd->next = evenHead;
-        return head;
-    }
-};`},
-            { num:414, title:"Third Maximum Number", time:"O(n)", space:"O(1)",
-              code:`#include <vector>
-#include <set>
-using namespace std;
-
-class Solution {
-public:
-    int thirdMax(vector<int>& nums) {
-        set<int> top;
-        for (int n : nums) {
-            top.insert(n);
-            if ((int)top.size() > 3)
-                top.erase(top.begin());
-        }
-        if ((int)top.size() < 3) return *top.rbegin();
-        return *top.begin();
-    }
-};`},
-            { num:1281, title:"Subtract the Product and Sum of Digits", time:"O(log n)", space:"O(1)",
-              code:`class Solution {
-public:
-    int subtractProductAndSum(int n) {
-        int product = 1, sum = 0;
-        while (n > 0) {
-            int d = n % 10;
-            product *= d;
-            sum += d;
-            n /= 10;
-        }
-        return product - sum;
-    }
-};`},
-            { num:1952, title:"Three Divisors", time:"O(n)", space:"O(1)",
-              code:`class Solution {
-public:
-    bool isThree(int n) {
-        int count = 0;
-        for (int i = 1; i <= n; i++)
-            if (n % i == 0) count++;
-        return count == 3;
-    }
-};`},
-            { num:2235, title:"Add Two Integers", time:"O(1)", space:"O(1)",
-              code:`class Solution {
-public:
-    int sum(int num1, int num2) {
-        return num1 + num2;
-    }
-};`},
-            { num:2469, title:"Convert the Temperature", time:"O(1)", space:"O(1)",
-              code:`#include <vector>
-using namespace std;
-
-class Solution {
-public:
-    vector<double> convertTemperature(double celsius) {
-        return { celsius + 273.15, celsius * 1.80 + 32.00 };
-    }
-};`},
-            { num:2520, title:"Count the Digits That Divide It", time:"O(log n)", space:"O(1)",
-              code:`class Solution {
-public:
-    int countDigits(int num) {
-        int count = 0, temp = num;
-        while (temp > 0) {
-            int d = temp % 10;
-            if (d != 0 && num % d == 0) count++;
-            temp /= 10;
-        }
-        return count;
-    }
-};`},
-            { num:2535, title:"Difference Between Element Sum and Digit Sum", time:"O(n log max)", space:"O(1)",
-              code:`#include <vector>
-#include <cmath>
-using namespace std;
-
-class Solution {
-public:
-    int differenceOfSum(vector<int>& nums) {
-        int elemSum = 0, digitSum = 0;
-        for (int n : nums) {
-            elemSum += n;
-            int temp = n;
-            while (temp > 0) {
-                digitSum += temp % 10;
-                temp /= 10;
+            // Auto-open card
+            const cw = document.getElementById('cw-' + num);
+            const ch = document.getElementById('ch-' + num);
+            if (cw && !cw.classList.contains('open')) {
+                cw.classList.add('open');
+                if (ch) ch.classList.add('open');
             }
-        }
-        return abs(elemSum - digitSum);
-    }
-};`},
-            { num:2652, title:"Sum Multiples", time:"O(n)", space:"O(1)",
-              code:`class Solution {
-public:
-    int sumOfMultiples(int n) {
-        int sum = 0;
-        for (int i = 1; i <= n; i++)
-            if (i % 3 == 0 || i % 5 == 0 || i % 7 == 0)
-                sum += i;
-        return sum;
-    }
-};`},
-            { num:3190, title:"Find Minimum Operations to Make Array Divisible by Three", time:"O(n)", space:"O(1)",
-              code:`#include <vector>
-using namespace std;
 
-class Solution {
-public:
-    int minimumOperations(vector<int>& nums) {
-        int ops = 0;
-        for (int n : nums) {
-            int r = n % 3;
-            if (r != 0) ops++;
-        }
-        return ops;
-    }
-};`},
-            { num:3289, title:"The Two Sneaky Numbers of Digitville", time:"O(n)", space:"O(n)",
-              code:`#include <vector>
-using namespace std;
+            try {
+                await navigator.clipboard.writeText(hc.code);
+                const orig = nbox.innerHTML;
+                nbox.classList.add('copied-box');
+                nbox.innerHTML = '<span>✓</span>';
+                showToast('Copied #' + num + ': ' + hc.title);
+                setTimeout(() => { nbox.classList.remove('copied-box'); nbox.innerHTML = orig; }, 2000);
+            } catch (e) { }
 
-class Solution {
-public:
-    vector<int> getSneakyNumbers(vector<int>& nums) {
-        int n = (int)nums.size() - 2;
-        vector<int> freq(n, 0), res;
-        for (int x : nums) {
-            if (++freq[x] == 2)
-                res.push_back(x);
-        }
-        return res;
-    }
-};`},
-            { num:3658, title:"Minimum Operations to Make Array Values Equal to K", time:"O(n log n)", space:"O(n)",
-              code:`#include <vector>
-#include <set>
-using namespace std;
-
-class Solution {
-public:
-    int minOperations(vector<int>& nums, int k) {
-        set<int> distinct;
-        for (int n : nums) {
-            if (n < k) return -1;
-            if (n > k) distinct.insert(n);
-        }
-        return (int)distinct.size();
-    }
-};`}
-        ];
-
-        function toggleCard(idx) {
-            const container = document.getElementById('cw-' + idx);
-            const chevron = document.getElementById('ch-' + idx);
-            const isOpen = container.classList.toggle('open');
-            chevron.classList.toggle('open', isOpen);
+            // Scroll card into view
+            const card = document.getElementById('card-' + num);
+            if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
-        function copyCode(idx, btn) {
-            const code = problems[idx].code;
-            navigator.clipboard.writeText(code).then(() => {
-                const isNumberBox = btn.classList.contains('number-box');
-                const originalContent = btn.innerHTML;
-                
-                btn.classList.add('copied');
-                if (!isNumberBox) {
-                    btn.textContent = 'Copied!';
-                }
-                
-                setTimeout(() => {
-                    btn.innerHTML = originalContent;
-                    btn.classList.remove('copied');
-                }, 2000);
+        // ─── FILTER ───
+        function filterAll() {
+            const q = document.getElementById('search').value.toLowerCase().trim();
+            const diff = currentDifficulty;
+
+            visibleProblems = allProblems.filter(([num, title, d]) => {
+                const matchQ = !q || String(num).includes(q) || title.toLowerCase().includes(q);
+                const matchD = !diff || d === diff;
+                return matchQ && matchD;
             });
+
+            renderCards();
+
+            allProblems.forEach(([num, , d]) => {
+                const nbox = document.getElementById('nbox-' + num);
+                if (!nbox) return;
+                const matchQ = !q || String(num).includes(q) || allProblems.find(p => p[0] === num)?.[1].toLowerCase().includes(q);
+                const matchD = !diff || d === diff;
+                nbox.style.display = (matchQ && matchD) ? '' : 'none';
+            });
+
+            document.getElementById('statusBar').innerHTML =
+                `Showing <span>${visibleProblems.length}</span> of <span>${allProblems.length}</span> solutions`;
         }
 
         function expandAll() {
-            problems.forEach((_, i) => {
-                const card = document.getElementById('card-' + i);
-                if (card && card.style.display !== 'none') {
-                    document.getElementById('cw-' + i).classList.add('open');
-                    document.getElementById('ch-' + i).classList.add('open');
+            visibleProblems.forEach(([num]) => {
+                const cw = document.getElementById('cw-' + num);
+                const ch = document.getElementById('ch-' + num);
+                if (cw && !cw.classList.contains('open')) {
+                    cw.classList.add('open');
+                    if (ch) ch.classList.add('open');
                 }
             });
         }
 
         function collapseAll() {
-            problems.forEach((_, i) => {
-                document.getElementById('cw-' + i).classList.remove('open');
-                document.getElementById('ch-' + i).classList.remove('open');
+            allProblems.forEach(([num]) => {
+                const cw = document.getElementById('cw-' + num);
+                const ch = document.getElementById('ch-' + num);
+                if (cw) cw.classList.remove('open');
+                if (ch) ch.classList.remove('open');
             });
         }
 
-        function filterCards() {
-            const q = document.getElementById('search').value.toLowerCase().trim();
-            let visible = 0;
-            problems.forEach((p, i) => {
-                const card = document.getElementById('card-' + i);
-                const nbox = document.getElementById('nbox-' + i);
-                const match = !q || String(p.num).includes(q) || p.title.toLowerCase().includes(q);
-                
-                card.style.display = match ? '' : 'none';
-                if (nbox) nbox.style.display = match ? 'flex' : 'none';
-                
-                if (match) visible++;
-            });
-            document.getElementById('count').textContent = `Showing ${visible} of ${problems.length} solutions`;
-        }
-
-        function renderCards() {
-            const container = document.getElementById('cards');
-            container.innerHTML = problems.map((p, i) => `
-                <div class="problem-card" id="card-${i}">
-                    <div class="card-header" onclick="toggleCard(${i})">
-                        <span class="num-badge">#${p.num}</span>
-                        <span class="problem-title">${p.title}</span>
-                        <div class="meta-tags">
-                            <span class="tag">${p.time}</span>
-                            <span class="tag">${p.space}</span>
-                        </div>
-                        <span class="chevron" id="ch-${i}">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                        </span>
-                    </div>
-                    <div class="code-container" id="cw-${i}">
-                        <div class="code-content">
-                            <button class="copy-btn" onclick="copyCode(${i}, this)">Copy</button>
-                            <pre>${highlightCode(p.code)}</pre>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderNumberGrid() {
-            const container = document.getElementById('number-grid');
-            container.innerHTML = problems.map((p, i) => `
-                <div class="number-box" id="nbox-${i}" onclick="copyCode(${i}, this)" title="${p.title}">
-                    <span>${p.num}</span>
-                    <span class="copy-label">Copy</span>
-                </div>
-            `).join('');
-        }
-
-        function highlightCode(code) {
-            // Simple regex-based highlight simulation
-            return code
-                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-                .replace(/\b(class|public|private|struct|using|namespace|return|if|else|for|while|do|int|long|double|float|char|void|bool|vector|unordered_map|string|set|abs|new|nullptr|int_max|int_min|long_long|size)\b/g, '<span class="k">$1</span>')
-                .replace(/\b(\d+)\b/g, '<span class="n">$1</span>')
-                .replace(/(\/\/.+)/g, '<span class="c">$1</span>')
-                .replace(/(".*?")/g, '<span class="s">$1</span>')
+        // ─── SYNTAX HIGHLIGHT ───
+        function hlCode(code) {
+            const esc = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return esc
+                .replace(/(\/\/.+)/g, '<span class="cmt">$1</span>')
+                .replace(/("(?:[^"\\]|\\.)*")/g, '<span class="s">$1</span>')
+                .replace(/\b(class|struct|public|private|protected|using|namespace|return|if|else|for|while|do|new|delete|nullptr|true|false|const|static|inline|auto|void|bool|int|long|short|char|double|float|unsigned|signed|size_t|string|vector|unordered_map|unordered_set|map|set|queue|stack|deque|pair|tuple|shared_ptr|unique_ptr|include|define)\b/g, '<span class="k">$1</span>')
+                .replace(/\b(\d+[uUlLfF]*)\b/g, '<span class="n">$1</span>')
                 .replace(/(\w+)(?=\s*\()/g, '<span class="f">$1</span>');
         }
 
-        renderNumberGrid();
+        // ─── TOAST ───
+        let toastTimer;
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+        }
+
+        // ─── INIT ───
+        renderGrid();
         renderCards();
+        document.getElementById('statusBar').innerHTML =
+            `All <span>${allProblems.length}</span> solutions loaded and ready for instant use`;
     </script>
 </body>
+
 </html>
