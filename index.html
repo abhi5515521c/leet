@@ -70,6 +70,31 @@
             opacity: 0.1;
         }
 
+        /* ─── FLOATING AESTHETIC ICONS ─── */
+        .bg-icons {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .f-icon {
+            position: absolute;
+            color: var(--accent);
+            opacity: 0.1;
+            font-family: var(--pixel);
+            font-size: 1.2rem;
+            animation: floatIcon 30s infinite linear;
+        }
+
+        @keyframes floatIcon {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(100px, 100px) rotate(90deg); }
+            66% { transform: translate(-50px, 200px) rotate(180deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+
         .container {
             max-width: 1100px;
             margin: 0 auto;
@@ -651,6 +676,7 @@
 </head>
 
 <body>
+    <div class="bg-icons" id="bgIcons"></div>
     <div class="container">
 
         <header>
@@ -713,6 +739,22 @@
         let currentDifficulty = "";
 
         function diffClass(d) { return d === 'Easy' ? 'diff-easy' : d === 'Hard' ? 'diff-hard' : 'diff-medium'; }
+
+        // ─── GENERATE FLOATING ICONS ───
+        function genIcons() {
+            const container = document.getElementById('bgIcons');
+            const icons = ['+', '×', '[ ]', '< >', '•', '÷', '○', '□', '∆', '§'];
+            for (let i = 0; i < 25; i++) {
+                const el = document.createElement('div');
+                el.className = 'f-icon';
+                el.textContent = icons[Math.floor(Math.random() * icons.length)];
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.top = Math.random() * 100 + 'vh';
+                el.style.animationDelay = (Math.random() * -30) + 's';
+                el.style.animationDuration = (20 + Math.random() * 30) + 's';
+                container.appendChild(el);
+            }
+        }
 
         // ─── CUSTOM DROPDOWN LOGIC ───
         function toggleDropdown() {
@@ -891,6 +933,7 @@
         }
 
         // ─── INIT ───
+        genIcons();
         renderGrid();
         renderCards();
         document.getElementById('statusBar').innerHTML =
